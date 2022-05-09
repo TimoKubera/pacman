@@ -87,12 +87,7 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    from game import Directions
     from util import Stack
-    w = Directions.WEST
-    n = Directions.NORTH
-    e = Directions.EAST
-    s = Directions.SOUTH
 
     # Contains the already discovered coordinates
     discovered = []
