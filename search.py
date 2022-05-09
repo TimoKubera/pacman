@@ -124,7 +124,39 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import Queue
+
+    # Contains the already discovered coordinates
+    discovered = []
+
+    # Contains Directions [NORTH, SOUTH, WEST, ...]
+    path = []
+
+    # Each queue element contains a coordinate and a path from the starting point to the coordinate ((x,y), (NORTH, SOUTH, WEST, ...))
+    qu = Queue
+    qu.__init__(qu)
+    qu.push(qu, (problem.getStartState(), path))
+
+    if problem.isGoalState(problem.getStartState()):
+        return []
+
+    # The actual BFS algorithm
+    while not qu.isEmpty(qu):
+        node, path = qu.pop(qu)
+
+        if problem.isGoalState(node):
+            return path
+
+        if node not in discovered:
+            discovered.append(node)
+            succ = problem.getSuccessors(node)
+            for state in succ:
+                if state[0] not in discovered:
+                    updated_path = path + [state[1]]
+                    qu.push(qu, (state[0], updated_path))
+
+    return path
+    #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
