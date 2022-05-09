@@ -87,7 +87,44 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from game import Directions
+    from util import Stack
+    w = Directions.WEST
+    n = Directions.NORTH
+    e = Directions.EAST
+    s = Directions.SOUTH
+
+    # Contains the already discovered coordinates
+    discovered = []
+
+    # Contains Directions [NORTH, SOUTH, WEST, ...]
+    path = []
+
+    # Each stack element contains a coordinate and a path from the starting point to the coordinate ((x,y), (NORTH, SOUTH, WEST, ...))
+    st = Stack
+    st.__init__(st)
+    st.push(st, (problem.getStartState(), path))
+
+    if problem.isGoalState(problem.getStartState()):
+        return []
+
+    # The actual DFS algorithm
+    while not st.isEmpty(st):
+        node, path = st.pop(st)
+
+        if problem.isGoalState(node):
+            return path
+
+        if node not in discovered:
+            discovered.append(node)
+            succ = problem.getSuccessors(node)
+            for state in succ:
+                if state[0] not in discovered:
+                    updated_path = path + [state[1]]
+                    st.push(st, (state[0], updated_path))
+
+    return path
+    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
