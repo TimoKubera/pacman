@@ -308,7 +308,6 @@ class CornersProblem(search.SearchProblem):
         for item in state[1]:
             if item == 0:
                 return False
-        print("~~~")
         return True
 
     def getSuccessors(self, state):
