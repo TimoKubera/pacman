@@ -305,10 +305,16 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         #util.raiseNotDefined()
+        print("StartState")
+        print(self.getStartState())
+        print("state[1]")
+        print(state[1])
         for item in state[1]:
+            print("item")
+            print(item)
             if item == 0:
                 return False
-            
+        print("~~~")
         return True
 
     def getSuccessors(self, state):

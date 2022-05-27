@@ -208,7 +208,7 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
-    
+
 from util import PriorityQueue
 
 class MyPriorityQueueWithFunction(PriorityQueue):
@@ -238,7 +238,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     que = MyPriorityQueueWithFunction(problem, func)
     que.push((problem.getStartState(), path), heuristic)
     
-    if problem.isGoalState(problem.getStartState):
+
+    if problem.isGoalState(problem.getStartState()):
         return []
         
         
