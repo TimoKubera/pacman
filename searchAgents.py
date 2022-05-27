@@ -385,13 +385,19 @@ def cornersHeuristic(state, problem):
 
     if(problem.isGoalState(state)):
         return 0
-    # Calculate the manhattan distance from state's x,y-coordinates to all corners.
     x,y = state[0]
     min_dist = 999999
-    for corner_x, corner_y in corners:
-        manh_dist = sqrt((corner_x - x)**2) + sqrt((corner_y - y)**2)
+    corner_x, corner_y
+    
+    # Calculate the manhattan distance from the pacman position to the shortest corner.
+    for c_x, c_y in corners:
+        manh_dist = abs(c_x - x + c_y - y)
         if manh_dist < min_dist:
             min_dist = manh_dist
+            corner_x = c_x
+            corner_y = c_y
+    
+    #TODO: Add the manhattan distance from the corner to the other corners (which weren't traversed, yet).
 
     return min_dist # Default to trivial solution
 
