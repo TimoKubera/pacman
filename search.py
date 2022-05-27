@@ -89,79 +89,118 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     from util import Stack
 
-    # Contains the already discovered coordinates
+   # Contains the already discovered coordinates
     discovered = []
 
-    # Contains Directions [NORTH, SOUTH, WEST, ...]
+   # Contains Directions [NORTH, SOUTH, WEST, ...]
     path = []
 
-    # Each stack element contains a coordinate and a path from the starting point to the coordinate ((x,y), (NORTH, SOUTH, WEST, ...))
+   # Each stack element contains a coordinate and a path from the starting point to the coordinate ((x,y), (NORTH, SOUTH, WEST, ...))
     st = Stack
     st.__init__(st)
     st.push(st, (problem.getStartState(), path))
 
     if problem.isGoalState(problem.getStartState()):
-        return []
+       return []
 
-    # The actual DFS algorithm
+   # The actual DFS algorithm
     while not st.isEmpty(st):
-        node, path = st.pop(st)
+       node, path = st.pop(st)
 
-        if problem.isGoalState(node):
-            return path
+       if problem.isGoalState(node):
+           return path
 
-        if node not in discovered:
-            discovered.append(node)
-            succ = problem.getSuccessors(node)
-            for state in succ:
-                if state[0] not in discovered:
-                    updated_path = path + [state[1]]
-                    st.push(st, (state[0], updated_path))
+       if node not in discovered:
+           discovered.append(node)
+           succ = problem.getSuccessors(node)
+           for state in succ:
+               if state[0] not in discovered:
+                   updated_path = path + [state[1]]
+                   st.push(st, (state[0], updated_path))
 
     return path
-    #util.raiseNotDefined()
+   #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    #util.raiseNotDefined()
     from util import Queue
-
-    # Contains the already discovered coordinates
+    
     discovered = []
-
-    # Contains Directions [NORTH, SOUTH, WEST, ...]
+    
     path = []
-
-    # Each queue element contains a coordinate and a path from the starting point to the coordinate ((x,y), (NORTH, SOUTH, WEST, ...))
-    qu = Queue
-    qu.__init__(qu)
-    qu.push(qu, (problem.getStartState(), path))
-
+    
+    q = Queue
+    q.__init__(q)
+    q.push(q, (problem.getStartState(), path))
+    
+    
     if problem.isGoalState(problem.getStartState()):
         return []
-
-    # The actual BFS algorithm
-    while not qu.isEmpty(qu):
-        node, path = qu.pop(qu)
-
+    
+    while not q.isEmpty(q):
+        node, path = q.pop(q)
+        
         if problem.isGoalState(node):
             return path
-
+        
         if node not in discovered:
             discovered.append(node)
             succ = problem.getSuccessors(node)
             for state in succ:
                 if state[0] not in discovered:
                     updated_path = path + [state[1]]
-                    qu.push(qu, (state[0], updated_path))
-
+                    q.push(q, (state[0], updated_path))
+    
     return path
-    #util.raiseNotDefined()
+    
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
+    
+    from util import PriorityQueue
+    
+    discovered = []
+    path = []
+    
+    pq = PriorityQueue
+    pq.__init__(pq)
+    pq.push(pq, (problem.getStartState(), path), 0)
+    
+    if problem.isGoalState(problem.getStartState()):
+        return []
+    
+    while not pq.isEmpty(pq):
+        node, path = pq.pop(pq)
+        
+        if problem.isGoalState(node):
+            return path
+        
+        if node not in discovered:
+            discovered.append(node)
+            succ = problem.getSuccessors(node)
+            
+            for state in succ:
+                if state[0] not in discovered:
+                   updated_path = path + [state[1]]
+                   
+                   priority = problem.getCostOfActions(updated_path)
+                   
+                   pq.push(pq, (state[0], updated_path), priority)
+                   
+                elif state[0] not in discovered:
+                    for state in pq.heap:
+                        if state[2][0] == state[0]:
+                            old_priority = problem.getCostOfActions(state [2][1])
+                    
+                    new_priority = problem.getCostOfActions(path + [state[1]])
+                    
+                    if old_priority > new_priority:
+                        updated_path = path + [state[1]]
+                        pq.update(pq, (state[0], updated_path), new_priority)
 
 def nullHeuristic(state, problem=None):
     """
@@ -169,11 +208,55 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+    
+from util import PriorityQueue
+
+class MyPriorityQueueWithFunction(PriorityQueue):
+    
+    def __init__(self, problem, priorityFunction):
+        self.priorityFunction = priorityFunction
+        PriorityQueue.__init__(self)
+        
+        self.problem = problem
+        
+    def push(self, item, heuristic):
+        PriorityQueue.push(self, item, self.priorityFunction(self.problem, item, heuristic))
+
+def func(problem, state, heuristic):
+    
+    new_pri = problem.getCostOfActions(state[1]) + heuristic(state[0], problem)
+    
+    return new_pri
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+   # util.raiseNotDefined()
+    discovered = []
+    path = []
+    
+    que = MyPriorityQueueWithFunction(problem, func)
+    que.push((problem.getStartState(), path), heuristic)
+    
+    if problem.isGoalState(problem.getStartState):
+        return []
+        
+        
+    while not que.isEmpty():
+        node, path = que.pop()
+        
+        if problem.isGoalState(node):
+            return path
+        
+        if node not in discovered: 
+            
+            discovered.append(node)
+            succ = problem.getSuccessors(node)
+            for state in succ:
+                if state[0] not in discovered:
+                    updated_path = path + [state[1]]
+                    que.push((state[0], updated_path), heuristic)
+
 
 
 # Abbreviations
