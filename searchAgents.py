@@ -386,12 +386,10 @@ def cornersHeuristic(state, problem):
     2. Afterwards it adds the manhattan distance from (corner_x, corner_y) to the nearest corner that has not been visited.
     3. Step 2. will be repeated until there is no corner left that has not been visited.
     """
-    from math import sqrt
-
     # Constraint: Return 0 at a goal state
     if(problem.isGoalState(state)):
         return 0
-        
+
     x,y = state[0]
     min_dist = 999999
     distance = 0
@@ -510,7 +508,29 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    # Constraint: Return 0 at a goal state
+    if(problem.isGoalState(state)):
+        return 0
+
+    x,y = state[0]
+    min_dist = 999999
+    distance = 0
+    corner_x, corner_y = 0, 0
+    to_visit = foodGrid.asList()
+
+    # Calculate the manhattan distance from the pacman position to the shortest food position.
+    while to_visit:
+        for c_x, c_y in to_visit:
+            manh_dist = abs(c_x - x) + abs(c_y - y)
+            if manh_dist < min_dist:
+                min_dist = manh_dist
+                corner_x, corner_y = c_x, c_y
+        distance += min_dist
+        min_dist = 999999
+        x, y = corner_x, corner_y
+        to_visit.pop(to_visit.index((corner_x, corner_y)))
+
+    return distance # Default to trivial solution
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
