@@ -381,25 +381,40 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+    """
+    1. The algorithm calculates the manhattan distance from the current pacman position to the nearest corner (corner_x, corner_y).
+    2. Afterwards it adds the manhattan distance from (corner_x, corner_y) to the nearest corner that has not been visited.
+    3. Step 2. will be repeated until there is no corner left that has not been visited.
+    """
     from math import sqrt
 
     if(problem.isGoalState(state)):
         return 0
     x,y = state[0]
     min_dist = 999999
-    corner_x, corner_y
+    distance = 0
+    corner_x, corner_y = 0, 0
     
-    # Calculate the manhattan distance from the pacman position to the shortest corner.
-    for c_x, c_y in corners:
-        manh_dist = abs(c_x - x + c_y - y)
-        if manh_dist < min_dist:
-            min_dist = manh_dist
-            corner_x = c_x
-            corner_y = c_y
-    
-    #TODO: Add the manhattan distance from the corner to the other corners (which weren't traversed, yet).
+    # Corners that still need to be visited
+    to_visit = []
 
-    return min_dist # Default to trivial solution
+    for i in range(len(state[1])):
+        if state[1][i] == 0:
+            to_visit.append(corners[i])
+
+    # Calculate the manhattan distance from the pacman position to the shortest corner.
+    while to_visit:
+        for c_x, c_y in to_visit:
+            manh_dist = abs(c_x - x) + abs(c_y - y)
+            if manh_dist < min_dist:
+                min_dist = manh_dist
+                corner_x, corner_y = c_x, c_y
+        distance += min_dist
+        min_dist = 999999
+        x, y = corner_x, corner_y
+        to_visit.pop(to_visit.index((corner_x, corner_y)))
+
+    return distance # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
