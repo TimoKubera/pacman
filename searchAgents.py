@@ -388,8 +388,10 @@ def cornersHeuristic(state, problem):
     """
     from math import sqrt
 
+    # Constraint: Return 0 at a goal state
     if(problem.isGoalState(state)):
         return 0
+        
     x,y = state[0]
     min_dist = 999999
     distance = 0
