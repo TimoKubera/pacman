@@ -382,6 +382,7 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     """
+    We are implementing a greedy heuristic.
     1. The algorithm calculates the manhattan distance from the current pacman position to the nearest corner (corner_x, corner_y).
     2. Afterwards it adds the manhattan distance from (corner_x, corner_y) to the nearest corner that has not been visited.
     3. Step 2. will be repeated until there is no corner left that has not been visited.
@@ -508,6 +509,12 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    """
+    Once again we are implementing a greedy heuristic.
+    The manhattan distance from the current pacman position to the nearest food (f_x, f_y)
+    is calculated. Afterwards we calculate the manhattan distance from (f_x, f_y) to the 
+    nearest foot. That's an interative process that terminates when the food is eaten.
+    """
     # Constraint: Return 0 at a goal state
     if(problem.isGoalState(state)):
         return 0
