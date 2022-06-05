@@ -536,10 +536,9 @@ def foodHeuristic(state, problem):
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
     """
-    The location calculates the manhattan distance from the pacman position to the closest food in the first step.
-    In the second step it calculates the distance from the closest food node to the farest food node, according to the
-    current pacman position.
-    The heuristic finally adds these two calulations and returns the sum.
+    The heuristic calculates the distance from the current pacman position to the closest food.
+    In the second step we increment the calulated value by 1 for each food that doesn't share the same
+    x, or y position with either the current pacman position, or the closest food position.
     """
     #return distance # Default to trivial solution
     from util import manhattanDistance
@@ -547,18 +546,11 @@ def foodHeuristic(state, problem):
     if len(food_list) == 0:
         return 0
     closest_food_index = closest_food(state, food_list)[1]
-    farest_food_index = farest_food(state, food_list)[1]
 
 
     closestFood = food_list[closest_food_index]
-    farestFood = food_list[farest_food_index]
-
-
-    heuristic = manhattanDistance(closestFood, position)
-    heuristic = heuristic + manhattanDistance(farestFood, closestFood)
-
     gameState = problem.startingGameState
-    d1 = mazeDistance(closestFood, position, gameState)
+    distance = mazeDistance(closestFood, position, gameState)
     
     leftPoints = 0
     for (x,y) in food_list:
@@ -571,8 +563,7 @@ def foodHeuristic(state, problem):
             if y!=position[1] and y!=closestFood[1]:
                 leftPoints = leftPoints + 1
     
-    #5543 nodes
-    return d1 + leftPoints
+    return distance + leftPoints
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
