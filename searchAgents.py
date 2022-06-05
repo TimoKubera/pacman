@@ -479,6 +479,32 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
 
+def closest_food(state, goal):
+    n = 0
+    closest_pos = 0
+    x,y = state[0]
+    min_dist = 99999
+    for g_x, g_y in goal:
+        manh_dist = abs(g_x - x) + abs(g_y - y)
+        if manh_dist < min_dist:
+            min_dist = manh_dist
+            closest_pos = n
+        n += 1
+    return (min_dist, closest_pos)
+
+def farest_food(state, goal):
+    n = 0
+    farest_pos = 0
+    x,y = state[0]
+    max_dist = 0
+    for g_x, g_y in goal:
+        manh_dist = abs(g_x - x) + abs(g_y - y)
+        if manh_dist > max_dist:
+            max_dist = manh_dist
+            farest_pos = n
+        n += 1
+    return (max_dist, farest_pos)
+
 def foodHeuristic(state, problem):
     """
     Your heuristic for the FoodSearchProblem goes here.
@@ -510,34 +536,43 @@ def foodHeuristic(state, problem):
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
     """
-    Once again we are implementing a greedy heuristic.
-    The manhattan distance from the current pacman position to the nearest food (f_x, f_y)
-    is calculated. Afterwards we calculate the manhattan distance from (f_x, f_y) to the 
-    nearest foot. That's an interative process that terminates when the food is eaten.
+    The location calculates the manhattan distance from the pacman position to the closest food in the first step.
+    In the second step it calculates the distance from the closest food node to the farest food node, according to the
+    current pacman position.
+    The heuristic finally adds these two calulations and returns the sum.
     """
-    # Constraint: Return 0 at a goal state
-    if(problem.isGoalState(state)):
+    #return distance # Default to trivial solution
+    from util import manhattanDistance
+    food_list = foodGrid.asList()
+    if len(food_list) == 0:
         return 0
+    closest_food_index = closest_food(state, food_list)[1]
+    farest_food_index = farest_food(state, food_list)[1]
 
-    x,y = state[0]
-    min_dist = 999999
-    distance = 0
-    corner_x, corner_y = 0, 0
-    to_visit = foodGrid.asList()
 
-    # Calculate the manhattan distance from the pacman position to the shortest food position.
-    while to_visit:
-        for c_x, c_y in to_visit:
-            manh_dist = abs(c_x - x) + abs(c_y - y)
-            if manh_dist < min_dist:
-                min_dist = manh_dist
-                corner_x, corner_y = c_x, c_y
-        distance += min_dist
-        min_dist = 999999
-        x, y = corner_x, corner_y
-        to_visit.pop(to_visit.index((corner_x, corner_y)))
+    closestFood = food_list[closest_food_index]
+    farestFood = food_list[farest_food_index]
 
-    return distance # Default to trivial solution
+
+    heuristic = manhattanDistance(closestFood, position)
+    heuristic = heuristic + manhattanDistance(farestFood, closestFood)
+
+    gameState = problem.startingGameState
+    d1 = mazeDistance(closestFood, position, gameState)
+    
+    leftPoints = 0
+    for (x,y) in food_list:
+        flag = 0
+        if x!=position[0] and x!=closestFood[0]:
+            leftPoints = leftPoints + 1
+            flag = 1
+        
+        if flag == 0:
+            if y!=position[1] and y!=closestFood[1]:
+                leftPoints = leftPoints + 1
+    
+    #5543 nodes
+    return d1 + leftPoints
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
